@@ -1,11 +1,34 @@
 #include "StateAutomata.h"
 
 #define ARR_SIZE(array) (sizeof(array) / sizeof(array[0]))
+#define ANYTHING " `~1234567890-=!@#$%^&*()_+[]{};:'\"\\\tqwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
 #define ALFABET "abcdefghijklmnopqrstuvwxyzABCDEFGHIJLKLMNOPQRSTUVWXYZ"
 #define NUMBERS "0123456789"
 
 char statesNames[][20] = {
     "InitialState",
+
+    "PlusInterm",
+    "MinusInterm",
+    "SlashInterm",
+    "EqualInterm",
+
+    "PowInsertInteger",
+    "PowInsertFloat",
+    "PowInteger",
+    "stFltNrLoop",    
+    "stFltPoint",
+
+    "stZeroNr",
+    "stBinIns",       
+    "stBinLoop",      
+    "stHexIns",       
+    "stHexLoop",      
+
+
+    "stLineCommLoop",
+    "stComStar",
+    "stComLopp",
 
     "ForbidState",
     "ErrorState",
@@ -22,31 +45,121 @@ char statesNames[][20] = {
     "Separator",
     "Comment",
 
+    "Delim",
+    "Space",
     "TabSpace",
     "NewLine",
-    "Space",
-    "Delim",
 
     "stLastState"
 };
 
-corespondence lambdaCoresp[] = {
+// ----------------------------------------
+// @TODO: Comentarii, siruri, caracter
+// ----------------------------------------
 
+corespondence lambdaCoresp[] = {
+    
+    // Number transitions
+    {stPowIntegr,   LMB, stLiteralIntegr},
+    {stFltNrLoop,   LMB, stLiteralFloat},
+    {stBinLoop,     LMB, stLiteralIntegr},
+    {stHexLoop,     LMB, stLiteralIntegr},
+
+    // Operators transitions
+    {stPlusInterm,  LMB, stOperator},
+    {stMinusInterm, LMB, stOperator},
+    {stSlashInterm, LMB, stOperator},
+    {stEqualInterm, LMB, stOperator},
+
+    // Others
+    {stLineCommLoop, LMB, stComment}
 };
 
 corespondence simpleCoresp[] = {
+    // Delimiters related
     {stInit,            ';',    stDelim},
-    {stInit,            ' ',    stSpace}
+    {stInit,            ' ',    stSpace},
+    {stInit,           '\n',    stNewLine},
+    {stInit,            '0',    stZeroNr},
+
+    // Numbers related
+    {stLiteralIntegr,   '.',    stFltPoint},
+    {stZeroNr,          '.',    stFltPoint},
+    {stZeroNr,          'b',    stBinIns},
+    {stZeroNr,          'x',    stHexIns},
+    
+    // Exponential numbers
+    {stLiteralIntegr,   'e',    stPowInsInt},
+    {stPowInsInt,       '+',    stPowIntegr},
+    {stLiteralFloat,    'e',    stPowInsFlt},
+    {stPowInsInt,       '-',    stFltNrLoop},
+
+    // Comment
+    {stSlashInterm,     '/',    stLineCommLoop},
+    {stSlashInterm,     '*',    stComLopp},
+    {stComLopp,         '*',    stComStar},
+    {stComStar,         '*',    stComStar},
+    {stComStar,         '/',    stComment},
+    {stComLopp,         '\n',   stComLopp},
+
+    // Intermediary operators
+    {stInit,            '-',    stMinusInterm},
+    {stInit,            '+',    stPlusInterm},
+    {stInit,            '/',    stSlashInterm},
+
+    // Composed operators
+    {stMinusInterm,     '-',    stOperator},
+    {stMinusInterm,     '=',    stOperator},
+    {stPlusInterm,      '+',    stOperator},
+    {stPlusInterm,      '=',    stOperator},
+    {stSlashInterm,     '=',    stOperator},
+    {stEqualInterm,     '=',    stOperator}
 };
 
 corespondences multipleCoresp[] = {
+    // Identfiers
     {stInit,            ALFABET,    stIdentifier},
     {stIdentifier,      ALFABET,    stIdentifier},
     {stIdentifier,      NUMBERS,    stIdentifier},
 
+    // Literals
     {stInit,            NUMBERS,    stLiteralIntegr},
     {stLiteralIntegr,   NUMBERS,    stLiteralIntegr},
+    {stLiteralFloat,    NUMBERS,    stLiteralFloat},
     {stLiteralIntegr,   ALFABET,    stForbidState},
+    {stLiteralFloat,    ALFABET,    stForbidState},
+
+    // Weird literals
+    {stFltPoint,        NUMBERS,    stFltNrLoop},
+
+    // Hex and Bin
+    {stBinIns,          "01",       stBinLoop},
+    {stBinLoop,         "01",       stBinLoop},
+    {stBinLoop,         NUMBERS,    stForbidState},
+    {stBinLoop,         ALFABET,   stForbidState},
+    {stHexIns,          NUMBERS,    stHexLoop},
+    {stHexIns,          "abcdef",   stHexLoop},
+    {stHexIns,          "ABCDEF",   stHexLoop},
+    {stHexLoop,         NUMBERS,    stHexLoop},
+    {stHexLoop,         "abcdef",   stHexLoop},
+    {stHexLoop,         "ABCDEF",   stHexLoop},
+    {stHexLoop,         ALFABET,    stForbidState},
+
+    // Exponential literals
+    {stPowInsInt,       NUMBERS,    stPowIntegr},
+    {stPowIntegr,       NUMBERS,    stPowIntegr},
+
+    {stPowInsFlt,       "+-",       stFltNrLoop},
+    {stPowInsFlt,       NUMBERS,    stFltNrLoop},
+    {stFltNrLoop,       NUMBERS,    stFltNrLoop},
+    
+    // Comments
+    {stLineCommLoop,    ANYTHING,   stLineCommLoop},
+    {stComLopp,         ANYTHING,  stComLopp},
+
+    // Operators and separators
+    {stInit,            "-=%^><!|&", stEqualInterm},
+    {stInit,            "#,.:?",     stOperator},
 
     {stInit,            "[]{}()",   stSeparator}
     
@@ -65,11 +178,14 @@ Token* tokCreate(int type, const char* str) {
 }
 
 void tokFPrint(Token* tok, FILE* out) {
+    char* toPrint = strcmp("\n", tok->string) == 0 
+        ? "\\n" : tok->string;
     fprintf(out,"<%s, \"%s\">\n", 
         statesNames[tok->type], 
-        tok->string
+        toPrint
     );
 }
+
 
 void tokDelete(Token* tok) {
     free(tok->string);
@@ -145,6 +261,7 @@ bool satisMlt(int corespIndex, int state, char symbol) {
 
 int stateSearch(int currState, char symbol) {
     int ind, defaultState = stErrorState;
+    if(symbol == '\0') return currState;
 
     for (ind = 0; ind < ARR_SIZE(simpleCoresp); ind++) {
         if(satisSim(ind, currState, symbol)) {
@@ -164,6 +281,8 @@ bool stateIsFinal(int state) {
 }
 
 char* chrAppend (char* string, char chr) {
+    if('\0' == chr)
+        return string;
     if(NULL == string) {
         string = malloc(2);
         string[0] = chr;
@@ -200,23 +319,28 @@ TokenList scanner(const char* string) {
     int foff = 0, loff = 0;
     char* word = NULL;
 
-    for(ind = 0; ind < strlen(string); ind++) {
+    for(ind = 0; ind <= strlen(string); ind++) {
+        restart:
         currState = stateSearch(prevState, string[ind]);
+        printf("%s - %s -| %s ^ %c\n",
+            statesNames[prevState], statesNames[currState],
+            word, string[ind]
+        );
         switch (currState)
         {
             case stErrorState: {
                 if (stateIsFinal(prevState)) {
                     ltokAdd(&lt, prevState, word);
                     free(word); word = NULL;
-                    word = chrAppend(word, string[ind]);
-                    break;
+                    prevState = stInit;
+                    goto restart;
                 }
                 int lmbState = lambdaTranz(prevState);
                 if (stateIsFinal(lmbState)) {
                     ltokAdd(&lt, lmbState, word);
                     free(word); word = NULL;
-                    word = chrAppend(word, string[ind]);
-                    break;
+                    prevState = stInit;
+                    goto restart;
                 }
                 char* errMsg = NULL;
                 errMsg = strAppend(errMsg, statesNames[prevState]);
@@ -244,6 +368,19 @@ TokenList scanner(const char* string) {
 
         }
     }
+    prevState = lambdaTranz(prevState);
+    if(stateIsFinal(prevState)) {
+        ltokAdd(&lt, prevState, word);
+    }
+    else {
+        char* errMsg = NULL;
+        errMsg = strAppend(errMsg, statesNames[prevState]);
+        errMsg = strAppend(errMsg, ": ");
+        errMsg = strAppend(errMsg, word);
+        ltokAdd(&lt, stErrorState, errMsg);
+        free(errMsg);
+    }
+
     end:
     free(word);
     return lt;

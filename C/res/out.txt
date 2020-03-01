@@ -1,3 +1,6 @@
-<Identifier, "int">
-<Identifier, " x">
-<Identifier, " 123">
+<LiteralIntegr, "0x213AfbC">
+<NewLine, "\n">
+<Comment, "// what is this">
+<NewLine, "\n">
+<NewLine, "\n">
+<Comment, "/* a"aba" '\'" */">

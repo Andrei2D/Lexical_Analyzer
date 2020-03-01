@@ -43,6 +43,27 @@ typedef struct _TokenList TokenList;
 enum StatesList {
     stInit,
 
+    stPlusInterm,   // ++ +=
+    stMinusInterm,  // -- -=
+    stSlashInterm,  // /* /=
+    stEqualInterm,  // == and *=
+
+    stPowInsInt,     //12e..
+    stPowInsFlt,     //12.3e..
+    stPowIntegr,     //13e12 
+    stFltNrLoop,      //2.3e-8, 0.3
+    stFltPoint,
+
+    stZeroNr,       // 0, 0b.., 0x.., 0. ..
+    stBinIns,       // 0b..
+    stBinLoop,      // 0b101..
+    stHexIns,       // 0x..
+    stHexLoop,      // 0xa5F..
+
+    stLineCommLoop, // //...
+    stComStar,      // /*******
+    stComLopp,      // /* .....
+
     stForbidState,
     stErrorState,
 
@@ -58,10 +79,10 @@ enum StatesList {
     stSeparator,
     stComment,
     
+    stDelim,
+    stSpace,
     stTabSpace,
     stNewLine,
-    stSpace,
-    stDelim,
 
     stLastState
 };
