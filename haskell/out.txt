@@ -1,0 +1,85 @@
+<Identif "int">
+<Space " ">
+<Identif "e25">
+<Space " ">
+<Space " ">
+<Delim ";">
+<Delim ";">
+<Comment "/* kjik k kh kj \nghuiy i     e\n\n\n  'a'\"'k'\"\"\"\"\\'\\n'  */">
+<Comment "/**/">
+<Space " ">
+<Space " ">
+<Space " ">
+<Comment "/***/">
+<Space " ">
+<Space " ">
+<NewLine "\n">
+<NewLine "\n">
+<NewLine "\n">
+<NewLine "\n">
+<Space " ">
+<Space " ">
+<Comment "/*\n\n\n    **/">
+<LitStr "\"  /*ah'h'*/\"">
+<LitCrc "'\"'">
+<LitStr "\"'\"">
+<Space " ">
+<LitCrc "'('">
+<Identif "void">
+<Space " ">
+<Identif "main">
+<Separator "(">
+<Separator ")">
+<Separator "{">
+<Separator "}">
+<Separator "{">
+<NewLine "\n">
+<NewLine "\n">
+<Identif "if">
+<Separator "(">
+<Separator "(">
+<Identif "a">
+<Operator "++">
+<Operator "+">
+<LitFlot "12e3">
+<Operator "==">
+<Identif "e12">
+<Operator ".">
+<Identif "e">
+<Operator "+">
+<LitIntr "12">
+<Separator ")">
+<Operator "*">
+<Operator "/">
+<Identif "e20">
+<Operator "++">
+<Operator "+=">
+<Operator "++">
+<LitFlot "20e-3">
+<Operator "<">
+<Operator "<=">
+<LitIntr "1">
+<Separator ")">
+<Space " ">
+<Space " ">
+<Identif "a">
+<Operator "*">
+<Operator "*">
+<Identif "p">
+<Operator "*">
+<Comment "/*/*/">
+<Operator "/">
+<Operator "++">
+<Identif "e">
+<Operator "+">
+<LitIntr "3">
+<Delim ";">
+<NewLine "\n">
+<Identif "return">
+<Space " ">
+<LitIntr "0">
+<Delim ";">
+<LitStr "\"jkhkjk      \\\"\"">
+<Identif "lkjlkjlkjkl">
+<NewLine "\n">
+<LitStr "\"}\"">
