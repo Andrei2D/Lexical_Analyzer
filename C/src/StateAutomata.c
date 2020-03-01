@@ -1,7 +1,7 @@
 #include "StateAutomata.h"
 
 #define ARR_SIZE(array) (sizeof(array) / sizeof(array[0]))
-#define ANYTHING " `~1234567890-=!@#$%^&*()_+[]{};:'\"\\\tqwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
+#define ANYTHING " `~1234567890-=!?@#$%^&*()_+[]{}<>;:,.'/|\"\\\tqwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
 #define ALFABET "abcdefghijklmnopqrstuvwxyzABCDEFGHIJLKLMNOPQRSTUVWXYZ"
 #define NUMBERS "0123456789"
 
@@ -12,11 +12,14 @@ char statesNames[][20] = {
     "MinusInterm",
     "SlashInterm",
     "EqualInterm",
+    "stBarInterm",
+    "stAndInterm",
 
     "PowInsertInteger",
     "PowInsertFloat",
     "PowInteger",
-    "stFltNrLoop",    
+    "stFltNrLoop",  
+    "stFltExpLoop",  
     "stFltPoint",
 
     "stZeroNr",
@@ -25,10 +28,17 @@ char statesNames[][20] = {
     "stHexIns",       
     "stHexLoop",      
 
-
     "stLineCommLoop",
     "stComStar",
     "stComLopp",
+
+    "stChrStart",
+    "stChrEnd",
+    "stChrBack",
+
+    "stStrEnd",
+    "stStrLoop",
+    "stStrSlh",
 
     "ForbidState",
     "ErrorState",
@@ -62,14 +72,18 @@ corespondence lambdaCoresp[] = {
     // Number transitions
     {stPowIntegr,   LMB, stLiteralIntegr},
     {stFltNrLoop,   LMB, stLiteralFloat},
+    {stFltExpLoop,   LMB, stLiteralFloat},
     {stBinLoop,     LMB, stLiteralIntegr},
     {stHexLoop,     LMB, stLiteralIntegr},
+    {stZeroNr,      LMB, stLiteralIntegr},
 
     // Operators transitions
     {stPlusInterm,  LMB, stOperator},
     {stMinusInterm, LMB, stOperator},
     {stSlashInterm, LMB, stOperator},
     {stEqualInterm, LMB, stOperator},
+    {stAndInterm,   LMB, stOperator},
+    {stBarInterm,   LMB, stOperator},
 
     // Others
     {stLineCommLoop, LMB, stComment}
@@ -92,7 +106,11 @@ corespondence simpleCoresp[] = {
     {stLiteralIntegr,   'e',    stPowInsInt},
     {stPowInsInt,       '+',    stPowIntegr},
     {stLiteralFloat,    'e',    stPowInsFlt},
-    {stPowInsInt,       '-',    stFltNrLoop},
+    {stPowInsInt,       '-',    stFltExpLoop},
+    {stFltNrLoop,       'e',    stPowInsFlt},
+    {stPowIntegr,       '.',    stForbidState},
+    {stFltExpLoop,      '.',    stForbidState},
+    
 
     // Comment
     {stSlashInterm,     '/',    stLineCommLoop},
@@ -100,14 +118,31 @@ corespondence simpleCoresp[] = {
     {stComLopp,         '*',    stComStar},
     {stComStar,         '*',    stComStar},
     {stComStar,         '/',    stComment},
+    {stComStar,         '\n',   stComLopp},
     {stComLopp,         '\n',   stComLopp},
+
+    // Strings and characters
+    {stInit,            '\'',   stChrStart},
+    {stChrEnd,          '\'',   stLiteralCaract},
+    {stChrStart,        '\\',   stChrBack},
+    {stInit,            '"',    stStrLoop},
+    {stStrLoop,         '\\',   stStrSlh},
+    {stStrLoop,         '"',    stLiteralString},
+    {stStrSlh,          '"',    stStrLoop},
+    {stStrLoop,         '\n',   stStrLoop},
 
     // Intermediary operators
     {stInit,            '-',    stMinusInterm},
     {stInit,            '+',    stPlusInterm},
     {stInit,            '/',    stSlashInterm},
+    {stInit,            '&',    stAndInterm},
+    {stInit,            '|',    stBarInterm},
 
     // Composed operators
+    {stAndInterm,       '&',    stOperator},
+    {stAndInterm,       '=',    stOperator},
+    {stBarInterm,       '|',    stOperator},
+    {stBarInterm,       '=',    stOperator},
     {stMinusInterm,     '-',    stOperator},
     {stMinusInterm,     '=',    stOperator},
     {stPlusInterm,      '+',    stOperator},
@@ -149,16 +184,24 @@ corespondences multipleCoresp[] = {
     {stPowInsInt,       NUMBERS,    stPowIntegr},
     {stPowIntegr,       NUMBERS,    stPowIntegr},
 
-    {stPowInsFlt,       "+-",       stFltNrLoop},
-    {stPowInsFlt,       NUMBERS,    stFltNrLoop},
-    {stFltNrLoop,       NUMBERS,    stFltNrLoop},
+    {stPowInsFlt,       "+-",       stFltExpLoop},
+    {stPowInsFlt,       NUMBERS,    stFltExpLoop},
+    {stFltExpLoop,      NUMBERS,    stFltExpLoop},
+    {stFltExpLoop,      ALFABET,    stForbidState},
     
     // Comments
     {stLineCommLoop,    ANYTHING,   stLineCommLoop},
-    {stComLopp,         ANYTHING,  stComLopp},
+    {stComLopp,         ANYTHING,   stComLopp},
+    {stComStar,         ANYTHING,   stComLopp},
+
+    // Strings and charactes
+    {stChrStart,        ANYTHING,   stChrEnd},
+    {stChrBack,         "'nt0",     stChrEnd},
+    {stStrLoop,         ANYTHING,   stStrLoop},
+    {stStrSlh,          ANYTHING,   stStrLoop},
 
     // Operators and separators
-    {stInit,            "-=%^><!|&", stEqualInterm},
+    {stInit,            "-*=%^><!", stEqualInterm},
     {stInit,            "#,.:?",     stOperator},
 
     {stInit,            "[]{}()",   stSeparator}

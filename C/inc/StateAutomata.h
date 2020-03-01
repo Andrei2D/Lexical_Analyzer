@@ -47,11 +47,14 @@ enum StatesList {
     stMinusInterm,  // -- -=
     stSlashInterm,  // /* /=
     stEqualInterm,  // == and *=
+    stBarInterm,    // |= || |
+    stAndInterm,    // &= && &
 
     stPowInsInt,     //12e..
     stPowInsFlt,     //12.3e..
     stPowIntegr,     //13e12 
-    stFltNrLoop,      //2.3e-8, 0.3
+    stFltNrLoop,     //2.375, 0.3
+    stFltExpLoop,    // 1.0e5 0.25e-6
     stFltPoint,
 
     stZeroNr,       // 0, 0b.., 0x.., 0. ..
@@ -63,6 +66,14 @@ enum StatesList {
     stLineCommLoop, // //...
     stComStar,      // /*******
     stComLopp,      // /* .....
+
+    stChrStart,     // '...
+    stChrEnd,       // 'c...
+    stChrBack,      // '\......
+
+    stStrEnd,       // "..>"
+    stStrLoop,      // "abc...
+    stStrSlh,       // " \" "
 
     stForbidState,
     stErrorState,

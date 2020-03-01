@@ -1,6 +1,71 @@
-<LiteralIntegr, "0x213AfbC">
+<Identifier, "int">
+<Space, " ">
+<Identifier, "a">
+<Delim, ";">
+<Comment, "/* hg edh edhg ed*/">
+<Comment, "/**lkhjkljhlkjhl***/">
+<Comment, "///">
 <NewLine, "\n">
-<Comment, "// what is this">
+<Comment, "/* gtlkhmjht // hedfghdtha"lkhlkjhlk sdfgsfg sf gsdfgfdg
+
+dghdg*/">
+<Operator, "*">
+<Comment, "/*
+
+sdfg
+
+
+    
+
+dfgd*
+//* */">
+<NewLine, "\n">
+<Identifier, "dgbdb">
 <NewLine, "\n">
 <NewLine, "\n">
-<Comment, "/* a"aba" '\'" */">
+<NewLine, "\n">
+<Space, " ">
+<Space, " ">
+<Space, " ">
+<Space, " ">
+<Operator, "*">
+<Comment, "//*/*/*/*/*/">
+<NewLine, "\n">
+<Comment, "/*kjh "*/">
+<LiteralString, ""/*kjh*/"">
+<LiteralString, ""/*"">
+<Identifier, "kjh">
+<LiteralString, ""'\"'"">
+<Identifier, "int">
+<Space, " ">
+<Identifier, "main">
+<Separator, "(">
+<Separator, ")">
+<Separator, "{">
+<NewLine, "\n">
+<Identifier, "if">
+<Separator, "(">
+<Separator, "(">
+<LiteralIntegr, "12e3">
+<Operator, "-">
+<Identifier, "e12">
+<Operator, "+">
+<LiteralIntegr, "3">
+<Operator, "==">
+<LiteralFloat, "10.5e+2125">
+<Operator, "<">
+<Operator, "<=">
+<Identifier, "e">
+<Operator, "*">
+<Operator, "/">
+<Identifier, "e12">
+<Operator, ".">
+<Identifier, "eef">
+<Separator, ")">
+<Operator, "++">
+<Identifier, "a">
+<Operator, "++">
+<Operator, "+">
+<Identifier, "e">
+<Operator, "+">
+<ErrorState, "PowInsertInteger: 5ef">
